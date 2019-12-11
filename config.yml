@@ -1,0 +1,20 @@
+hosts:
+  server1.localdomain:
+    - 22
+    - 443
+  server2.localdomain:
+    - 22
+    - 80
+
+check_interval: 20
+max_failures: 2
+log_level: info
+
+
+mail:
+  server: smtp.gmail.com
+  port: 587
+  from: example@gmail.com
+  to:
+    - silvan.loser@stud.hslu.ch
+    #- timo.herzog@stud.hslu.ch
