@@ -27,20 +27,20 @@ from cryptography.fernet import Fernet
 import yaml
 
 
-"""
-Vars
-"""
+###
+#Vars
+###
 
 CONFIG_FILE = "config.yml"
 PASSWORD_FILE = "password.bin"
 KEY_FILE = "key.bin"
 
-"""
-Classes
-"""
+###
+#Classes
+###
 
 
-class MailHandler(object):
+class MailHandler():
     """
     A simple MailHandler.
     """
@@ -55,6 +55,7 @@ class MailHandler(object):
         self.smtp_server = mail_config['server']
         self.context = ssl.create_default_context()
         self.password = decrypt_password()
+        self.message = ""
 
     def __send_mail(self, host, port, state):
         """
@@ -97,7 +98,7 @@ class MailHandler(object):
         self.__send_mail(host, port, "up")
 
 
-class ConfigLoader(object):
+class ConfigLoader():
     """A simle config loader."""
 
     def __init__(self, config_file):
@@ -118,7 +119,7 @@ class ConfigLoader(object):
         return self.config
 
 
-class Logger(object):
+class Logger():
     """ class that returns configured Logger. """
 
     def __init__(self):
@@ -146,9 +147,9 @@ class Logger(object):
         return self.logger
 
 
-"""
-Functions
-"""
+###
+#Functions
+###
 
 
 def check_hostnames(hostnames):
@@ -159,7 +160,7 @@ def check_hostnames(hostnames):
         try:
             socket.gethostbyname(hostname)
         except socket.error:
-            LOGGER.error("cannot resolve " + hostname)
+            LOGGER.error("cannot resolve {}".format(hostname))
             LOGGER.error("check your configuration")
             sys.exit(1)
 
@@ -189,7 +190,7 @@ def check_host(hostname, ports, mail_handler, max_failures):
 
             LOGGER.info("Port {0} on {1} is up!".format(port, hostname))
             sock.shutdown(socket.SHUT_RDWR)
-        except:
+        except socket.error:
             LOGGER.error("Port {0} is down on {1}".format(port, hostname))
 
             if os.path.isfile(host_status_file):
@@ -234,9 +235,10 @@ def decrypt_password():
     return bytes(unciphered_text).decode("utf-8")
 
 
-""""
-initialize global logging environment
-"""
+###
+#initialize global logging environment
+###
+
 CONFIG = ConfigLoader(CONFIG_FILE).get_config()
 LOGGER = Logger().get_logger()
 
